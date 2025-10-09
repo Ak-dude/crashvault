@@ -1,3 +1,33 @@
+Metadata-Version: 2.4
+Name: crashvault
+Version: 0.2.0
+Summary: Lightweight local crash/error vault with CLI
+Home-page: https://github.com/creeperkid2014/crashvault
+Author: Creeperkid2014 / AgentArk5
+License: Custom-Open License
+Project-URL: Source, https://github.com/creeperkid2014/crashvault
+Project-URL: Issues, https://github.com/creeperkid2014/crashvault/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Environment :: Console
+Classifier: Topic :: System :: Logging
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>=8
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
 ## Crashvault
 
 Crashvault is a lightweight, local-first crash/error vault with a simple CLI. Log errors, group them into issues, search, export/import, and keep a local history.
@@ -81,37 +111,6 @@ crashvault tail --level=error --tag=db --text=timeout
 - List with filters/sorting:
 ```
 crashvault list --status=open --sort=created_at --desc
-```
-
-### Beyond errors: notes, reports, attachments
-
-- Add a quick note:
-```
-crashvault note "Shipped v0.2.0 to staging" --tag=release
-```
-
-- Create a small report:
-```
-crashvault report --title "Outage resolved" --body "Root cause: bad config" --tag=incident
-```
-
-- Attach a file:
-```
-crashvault attach ./screenshot.png --name ui/screenshot-2025-10-09.png
-```
-
-### Auto logging options
-
-- Wrap any command and auto-log on failure:
-```
-crashvault wrap npm run build
-```
-
-- Install a Python exception hook (current process only):
-```
-python -c "import crashvault.cli as c; c.autolog.main([])"
-# or from CLI spawn a Python process and autolog uncaught exceptions in that process
-crashvault autolog
 ```
 
 ## Configuration

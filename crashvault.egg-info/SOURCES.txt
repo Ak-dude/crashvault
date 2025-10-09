@@ -1,0 +1,13 @@
+LICENSE
+README.md
+crashvault.py
+setup.py
+crashvault/__init__.py
+crashvault/cli.py
+crashvault/core.py
+crashvault.egg-info/PKG-INFO
+crashvault.egg-info/SOURCES.txt
+crashvault.egg-info/dependency_links.txt
+crashvault.egg-info/entry_points.txt
+crashvault.egg-info/requires.txt
+crashvault.egg-info/top_level.txt
