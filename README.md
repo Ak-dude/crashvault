@@ -114,6 +114,32 @@ python -c "import crashvault.cli as c; c.autolog.main([])"
 crashvault autolog
 ```
 
+### Diagnose and AI-assisted fix
+
+- Show code context from a stacktrace event:
+```
+crashvault diagnose <EVENT_ID>
+```
+
+- Ask a local Ollama model for a fix suggestion (configure model via `crashvault config set ollama_model "qwen2.5-coder:7b"`):
+```
+crashvault ai-fix <EVENT_ID> --model qwen2.5-coder:7b
+```
+
+### Notifications
+
+- Send a desktop notification for an event:
+```
+crashvault notify <EVENT_ID>
+```
+
+### Testing integration
+
+- Run tests for your repo (with coverage if available):
+```
+crashvault test --coverage --path tests/
+```
+
 ## Configuration
 
 - Data directory: defaults to `~/.crashvault`. Override with environment variable `CRASHVAULT_HOME` or via config file:

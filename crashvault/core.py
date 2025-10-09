@@ -88,3 +88,8 @@ def load_config():
 
 def save_config(cfg):
     _write_json_atomic(CONFIG_FILE, cfg)
+
+
+def get_config_value(key, default=None):
+    cfg = load_config()
+    return cfg.get(key, default)
