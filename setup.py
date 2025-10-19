@@ -18,7 +18,7 @@ class PostInstallCommand(install):
 
 setup(
     name="crashvault",
-    version="0.2.0",
+    version="0.2.1",
     description="Lightweight local crash/error vault with CLI",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
@@ -32,7 +32,7 @@ setup(
     python_requires=">=3.8",
     packages=find_packages(include=["crashvault", "crashvault.*"]),
     py_modules=[],
-    install_requires=["click>=8"],
+    install_requires=["click>=8", "rich"],
     entry_points={"console_scripts": ["crashvault=crashvault.cli:cli"]},
     classifiers=[
         "Programming Language :: Python :: 3",

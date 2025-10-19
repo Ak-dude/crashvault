@@ -50,12 +50,18 @@ def ai_fix(event_id, model):
         
         prompt = PROMPT_TMPL.format(event_json=json.dumps(ev, indent=2), code_context=code_context)
         try:
-            result = subprocess.run(["ollama", "run", model], input=prompt.encode("utf-8"), capture_output=True)
+            # Pass prompt as text via stdin and request text output; use a timeout to avoid hanging
+            result = subprocess.run(["ollama", "run", model], input=prompt, text=True, capture_output=True, timeout=60)
+        except subprocess.TimeoutExpired:
+            raise click.ClickException("Ollama request timed out")
+        except FileNotFoundError:
+            raise click.ClickException("ollama CLI not found. Install Ollama or update PATH.")
         except Exception as e:
             raise click.ClickException(str(e))
         if result.returncode != 0:
-            raise click.ClickException(result.stderr.decode("utf-8", errors="ignore"))
-        click.echo(result.stdout.decode("utf-8", errors="ignore"))
+            err = result.stderr or result.stdout
+            raise click.ClickException(err)
+        click.echo(result.stdout)
     else:
         click.echo(f"AI provider '{provider}' not yet implemented. Please use 'ollama' for now.")
         click.echo("Edit ~/.crashvault/config.json to change AI settings.")
