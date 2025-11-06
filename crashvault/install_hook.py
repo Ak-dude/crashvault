@@ -25,10 +25,14 @@ def create_user_config():
             "team": ""
         },
         "ai": {
-            "provider": "ollama",  # ollama, openai, anthropic
+            "provider": "ollama",  # ollama, openai, anthropic, gemini
             "model": "qwen2.5-coder:7b",
             "api_key": "",
-            "base_url": "http://localhost:11434"  # for ollama
+            "base_url": "http://localhost:11434",  # for ollama
+            "gemini": {
+                "api_key": "",
+                "model": "gemini-1.5-pro"
+            }
         },
         "notifications": {
             "enabled": True,
