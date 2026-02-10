@@ -1,7 +1,9 @@
 import click, json, re
 from pathlib import Path
 from ..core import EVENTS_DIR
+from ..rich_utils import get_console
 
+console = get_console()
 
 _STACK_RE = re.compile(r"File \"(?P<file>.+?)\", line (?P<line>\d+)")
 
@@ -43,15 +45,18 @@ def diagnose(event_id):
     ev = json.loads(event_file.read_text())
     stack = ev.get("stacktrace", "")
     if not stack:
-        click.echo("No stacktrace available for this event")
+        console.print("[warning]No stacktrace available for this event[/warning]")
         return
     frames = _extract_frames(stack)
     if not frames:
-        click.echo("Could not parse file/line frames from stacktrace")
+        console.print("[warning]Could not parse file/line frames from stacktrace[/warning]")
         return
     for path, line in frames:
-        click.echo(f"\n--- {path} : line {line} ---")
+        console.print(f"\n[highlight]--- {path} : line {line} ---[/highlight]")
         ctx = _read_context(path, line)
-        click.echo(ctx or "(file not found)")
+        if ctx:
+            click.echo(ctx)
+        else:
+            console.print("[muted](file not found)[/muted]")
 
 

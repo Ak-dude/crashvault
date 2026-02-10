@@ -37,6 +37,9 @@ def send_notification(title, message):
 @click.argument("event_id")
 def notify(event_id):
     """Send a desktop notification for an event."""
+    from ..rich_utils import get_console
+    console = get_console()
+
     for p in EVENTS_DIR.glob("**/*.json"):
         if p.stem == event_id:
             ev = json.loads(p.read_text())
@@ -44,9 +47,9 @@ def notify(event_id):
             msg = ev.get("message", "")[:200]
             ok = send_notification(title, msg)
             if not ok:
-                click.echo("Notification not supported on this system.")
+                console.print("[warning]Notification not supported on this system.[/warning]")
             else:
-                click.echo("Notification sent.")
+                console.print("[success]Notification sent.[/success]")
             return
     raise click.ClickException("Event not found")
 

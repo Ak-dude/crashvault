@@ -1,5 +1,8 @@
 import click, json
 from ..core import load_issues, save_issues, EVENTS_DIR
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command()
@@ -11,7 +14,7 @@ def purge(issue_id):
     before = len(issues)
     issues = [i for i in issues if i["id"] != issue_id]
     if len(issues) == before:
-        click.echo("Issue not found")
+        console.print("[error]Issue not found[/error]")
         return
     save_issues(issues)
     removed_events = 0
@@ -26,6 +29,6 @@ def purge(issue_id):
                 removed_events += 1
             except Exception:
                 pass
-    click.echo(f"Purged issue #{issue_id} and {removed_events} event(s)")
+    console.print(f"[danger]Purged issue[/danger] [highlight]#{issue_id}[/highlight] [danger]and {removed_events} event(s)[/danger]")
 
 

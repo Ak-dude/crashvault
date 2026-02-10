@@ -1,5 +1,8 @@
 import click, json
 from ..core import load_issues, EVENTS_DIR
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command()
@@ -24,6 +27,6 @@ def gc():
                 removed += 1
             except Exception:
                 pass
-    click.echo(f"Removed {removed} orphaned event file(s)")
+    console.print(f"[success]Removed {removed} orphaned event file(s)[/success]")
 
 

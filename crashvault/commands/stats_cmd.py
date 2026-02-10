@@ -1,5 +1,8 @@
 import click, json
 from ..core import load_issues, EVENTS_DIR
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command()
@@ -14,11 +17,15 @@ def stats():
         ev = json.loads(f.read_text())
         lvl = ev.get("level", "unknown")
         level_counts[lvl] = level_counts.get(lvl, 0) + 1
-    click.echo("Issues by status:")
+
+    console.print("[highlight]Issues by status:[/highlight]")
     for k, v in status_counts.items():
-        click.echo(f"  {k}: {v}")
-    click.echo("Events by level:")
+        status_style = "success" if k == "resolved" else "warning" if k == "ignored" else "primary"
+        console.print(f"  [{status_style}]{k}:[/{status_style}] {v}")
+
+    console.print("\n[highlight]Events by level:[/highlight]")
     for k, v in sorted(level_counts.items()):
-        click.echo(f"  {k}: {v}")
+        level_style = "danger" if k in ["error", "critical"] else "warning" if k == "warning" else "info"
+        console.print(f"  [{level_style}]{k}:[/{level_style}] {v}")
 
 

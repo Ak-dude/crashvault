@@ -27,6 +27,8 @@ def note(message, tags):
     with open(tmp, "w") as f:
         json.dump(data, f, indent=2)
     os.replace(tmp, path)
-    click.echo(f"Note {event_id} saved")
+    from ..rich_utils import get_console
+    console = get_console()
+    console.print(f"[success]Note[/success] [highlight]{event_id}[/highlight] [success]saved[/success]")
 
 

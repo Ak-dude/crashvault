@@ -3,9 +3,9 @@ import click, json
 from datetime import datetime
 from pathlib import Path
 from ..core import load_issues, load_events, get_user_config
-from rich.console import Console
+from ..rich_utils import get_console
 
-console = Console()
+console = get_console()
 
 
 def _generate_markdown_report(issues, events, filters):

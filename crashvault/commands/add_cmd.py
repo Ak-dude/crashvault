@@ -26,7 +26,9 @@ def add(message, stack, level, tags, contexts):
         }
         issues.append(issue)
         save_issues(issues)
-        click.echo(f"Created new issue #{issue['id']}")
+        from ..rich_utils import get_console
+        console = get_console()
+        console.print(f"[success]Created new issue[/success] [highlight]#{issue['id']}[/highlight]")
     context_dict = {}
     for kv in contexts:
         if "=" in kv:
@@ -52,7 +54,9 @@ def add(message, stack, level, tags, contexts):
         json.dump(data, f, indent=2)
     os.replace(tmp, path)
     logger.info(f"event recorded | issue_id={issue['id']} | event_id={event_id} | level={level}")
-    click.echo(f"Event {event_id} logged to issue #{issue['id']}")
+    from ..rich_utils import get_console
+    console = get_console()
+    console.print(f"[success]Event {event_id} logged to issue[/success] [highlight]#{issue['id']}[/highlight]")
 
     # Dispatch webhooks
     try:

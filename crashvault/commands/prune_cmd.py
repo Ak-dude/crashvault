@@ -1,6 +1,9 @@
 import click
 from datetime import datetime, timezone
 from ..core import EVENTS_DIR
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command(name="prune")
@@ -16,6 +19,6 @@ def prune(days):
                 removed += 1
         except Exception:
             continue
-    click.echo(f"Pruned {removed} old event file(s)")
+    console.print(f"[success]Pruned {removed} old event file(s)[/success]")
 
 

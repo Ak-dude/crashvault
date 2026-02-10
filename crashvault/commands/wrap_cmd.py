@@ -1,6 +1,9 @@
 import click, subprocess, json, os, uuid, platform
 from datetime import datetime, timezone
 from ..core import event_path_for
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command(name="wrap")
@@ -36,7 +39,7 @@ def wrap(cmd, level, tags):
     with open(tmp, "w") as f:
         json.dump(data, f, indent=2)
     os.replace(tmp, path)
-    click.echo(message)
+    console.print(f"[error]{message}[/error]")
     if proc.stdout:
         click.echo(proc.stdout, nl=False)
     if proc.stderr:

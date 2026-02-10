@@ -2,6 +2,9 @@ import click, json
 from datetime import datetime, timezone
 from pathlib import Path
 from ..core import load_issues, load_events
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command()
@@ -17,7 +20,7 @@ def export(output):
     data = json.dumps(payload, indent=2)
     if output:
         Path(output).write_text(data)
-        click.echo(f"Exported to {output}")
+        console.print(f"[success]Exported to[/success] [highlight]{output}[/highlight]")
     else:
         click.echo(data)
 

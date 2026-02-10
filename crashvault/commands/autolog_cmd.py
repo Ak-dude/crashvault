@@ -1,6 +1,9 @@
 import click, json, os, sys, uuid, platform, atexit, traceback
 from datetime import datetime, timezone
 from ..core import event_path_for
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command(name="autolog")
@@ -8,7 +11,7 @@ from ..core import event_path_for
 def autolog(enable):
     """Enable a simple Python exception hook to auto-log uncaught errors."""
     if not enable:
-        click.echo("Autolog disable is a noop for this simple CLI.")
+        console.print("[muted]Autolog disable is a noop for this simple CLI.[/muted]")
         return
 
     def excepthook(etype, value, tb):
@@ -37,6 +40,6 @@ def autolog(enable):
     sys.excepthook = excepthook
     # Best effort: write a tiny marker so users know it's active in this process
     atexit.register(lambda: None)
-    click.echo("Autolog exception hook installed for this Python process.")
+    console.print("[success]Autolog exception hook installed for this Python process.[/success]")
 
 

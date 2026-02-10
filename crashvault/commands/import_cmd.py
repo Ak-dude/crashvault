@@ -90,6 +90,8 @@ def import_(input, mode):
             json.dump(data, f, indent=2)
         os.replace(tmp, path)
         imported += 1
-    click.echo(f"Imported {len(issues_in)} issue(s), {imported} event(s)")
+    from ..rich_utils import get_console
+    console = get_console()
+    console.print(f"[success]Imported {len(issues_in)} issue(s), {imported} event(s)[/success]")
 
 

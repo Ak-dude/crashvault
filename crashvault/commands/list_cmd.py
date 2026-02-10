@@ -1,5 +1,8 @@
 import click
 from ..core import load_issues
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command(name="list")
@@ -13,6 +16,8 @@ def list_cmd(status, sort, desc):
     key = sort
     issues.sort(key=lambda i: i.get(key) if key != "id" else int(i.get("id", 0)), reverse=bool(desc))
     for i in issues:
-        click.echo(f"#{i['id']} {i['title']} ({i['status']})")
+        issue_status = i['status']
+        status_style = "success" if issue_status == "resolved" else "warning" if issue_status == "ignored" else "primary"
+        console.print(f"[highlight]#{i['id']}[/highlight] {i['title']} [{status_style}]({issue_status})[/{status_style}]")
 
 

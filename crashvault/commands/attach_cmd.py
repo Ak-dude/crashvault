@@ -1,6 +1,9 @@
 import click, shutil
 from pathlib import Path
 from ..core import ATTACH_DIR
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command(name="attach")
@@ -12,6 +15,6 @@ def attach(file, name):
     dest = ATTACH_DIR / (name or src.name)
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dest)
-    click.echo(f"Attached {src} -> {dest}")
+    console.print(f"[success]Attached[/success] [info]{src}[/info] [muted]->[/muted] [highlight]{dest}[/highlight]")
 
 

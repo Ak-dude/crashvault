@@ -6,8 +6,7 @@ crashvault/__init__.py
 crashvault/cli.py
 crashvault/core.py
 crashvault/install_hook.py
-crashvault/server.py
-crashvault/server_main.py
+crashvault/rich_utils.py
 crashvault.egg-info/PKG-INFO
 crashvault.egg-info/SOURCES.txt
 crashvault.egg-info/dependency_links.txt
@@ -39,7 +38,6 @@ crashvault/commands/report_cmd.py
 crashvault/commands/resolve_cmd.py
 crashvault/commands/restart_cmd.py
 crashvault/commands/search_cmd.py
-crashvault/commands/server_cmd.py
 crashvault/commands/set_status_cmd.py
 crashvault/commands/set_title_cmd.py
 crashvault/commands/setup_cmd.py
@@ -47,11 +45,4 @@ crashvault/commands/show_cmd.py
 crashvault/commands/stats_cmd.py
 crashvault/commands/tail_cmd.py
 crashvault/commands/test_cmd.py
-crashvault/commands/webhook_cmd.py
 crashvault/commands/wrap_cmd.py
-crashvault/webhooks/__init__.py
-crashvault/webhooks/base.py
-crashvault/webhooks/discord.py
-crashvault/webhooks/dispatcher.py
-crashvault/webhooks/http.py
-crashvault/webhooks/slack.py

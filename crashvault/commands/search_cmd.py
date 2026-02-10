@@ -1,5 +1,8 @@
 import click, json
 from ..core import EVENTS_DIR
+from ..rich_utils import get_console
+
+console = get_console()
 
 
 @click.command()
@@ -20,8 +23,10 @@ def search(level, tags, text):
                 continue
         if text and text.lower() not in ev.get("message", "").lower():
             continue
-        click.echo(f"{ev['timestamp']} [{ev.get('level','').upper()}] #{ev['issue_id']} {ev['message']}")
+        ev_level = ev.get('level', '').upper()
+        level_style = "danger" if ev_level in ["ERROR", "CRITICAL"] else "warning" if ev_level == "WARNING" else "info"
+        console.print(f"[secondary]{ev['timestamp']}[/secondary] [{level_style}][{ev_level}][/{level_style}] [highlight]#{ev['issue_id']}[/highlight] {ev['message']}")
         count += 1
-    click.echo(f"-- {count} event(s) matched --")
+    console.print(f"[muted]-- {count} event(s) matched --[/muted]")
 
 
