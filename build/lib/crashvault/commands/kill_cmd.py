@@ -1,6 +1,8 @@
+from rich.console import Console
 import click
 from ..core import ISSUES_FILE, EVENTS_DIR
 
+console = Console()
 
 @click.command()
 @click.confirmation_option(prompt="Are you sure you want to delete all logs?")
@@ -10,6 +12,6 @@ def kill():
         ISSUES_FILE.unlink()
     for f in EVENTS_DIR.glob("**/*.json"):
         f.unlink()
-    click.echo("[red]All logs have been deleted![/red]")
+    console.print("All logs deleted!", style="bold red")
 
 

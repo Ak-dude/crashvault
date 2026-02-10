@@ -21,16 +21,19 @@ from .commands.events_cmd import events_cmd
 from .commands.aliases import ls, rm, new, st, title_cmd, sh
 from .commands.config_cmd import config_group
 from .commands.misc_cmds import init, path
+from .commands.docs import docs
 from .commands.note_cmd import note
 from .commands.report_cmd import report
 from .commands.attach_cmd import attach
 from .commands.wrap_cmd import wrap
 from .commands.autolog_cmd import autolog
 from .commands.diagnose_cmd import diagnose
-from .commands.ai_fix_cmd import ai_fix
 from .commands.notify_cmd import notify
 from .commands.test_cmd import test_cmd
 from .commands.setup_cmd import setup_cmd
+from .commands.generate_report_cmd import generate_report
+from .commands.webhook_cmd import webhook
+from .commands.server_cmd import server
 
 
 @click.group()
@@ -68,10 +71,16 @@ cli.add_command(attach)
 cli.add_command(wrap)
 cli.add_command(autolog)
 cli.add_command(diagnose)
-cli.add_command(ai_fix)
 cli.add_command(notify)
 cli.add_command(test_cmd, name="test")
 cli.add_command(setup_cmd)
+cli.add_command(generate_report)
+
+# webhook and server commands
+cli.add_command(webhook)
+cli.add_command(server)
+
+cli.add_command(docs)
 
 # aliases
 cli.add_command(ls, name="ls")

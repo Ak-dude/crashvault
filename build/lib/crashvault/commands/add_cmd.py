@@ -54,4 +54,11 @@ def add(message, stack, level, tags, contexts):
     logger.info(f"event recorded | issue_id={issue['id']} | event_id={event_id} | level={level}")
     click.echo(f"Event {event_id} logged to issue #{issue['id']}")
 
+    # Dispatch webhooks
+    try:
+        from ..webhooks.dispatcher import dispatch_webhooks
+        dispatch_webhooks(data)
+    except Exception:
+        pass  # Don't fail the command if webhooks fail
+
 

@@ -95,17 +95,6 @@ def get_config_value(key, default=None):
     return cfg.get(key, default)
 
 
-def get_ai_config():
-    """Get AI configuration from user config."""
-    cfg = load_config()
-    return cfg.get("ai", {
-        "provider": "ollama",
-        "model": "qwen2.5-coder:7b",
-        "api_key": "",
-        "base_url": "http://localhost:11434"
-    })
-
-
 def get_user_config():
     """Get user configuration."""
     cfg = load_config()

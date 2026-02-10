@@ -21,6 +21,7 @@ from .commands.events_cmd import events_cmd
 from .commands.aliases import ls, rm, new, st, title_cmd, sh
 from .commands.config_cmd import config_group
 from .commands.misc_cmds import init, path
+from .commands.docs import docs
 from .commands.note_cmd import note
 from .commands.report_cmd import report
 from .commands.attach_cmd import attach
@@ -78,6 +79,8 @@ cli.add_command(generate_report)
 # webhook and server commands
 cli.add_command(webhook)
 cli.add_command(server)
+
+cli.add_command(docs)
 
 # aliases
 cli.add_command(ls, name="ls")

@@ -24,12 +24,6 @@ def create_user_config():
             "email": "",
             "team": ""
         },
-        "ai": {
-            "provider": "ollama",  # ollama, openai, anthropic
-            "model": "qwen2.5-coder:7b",
-            "api_key": "",
-            "base_url": "http://localhost:11434"  # for ollama
-        },
         "notifications": {
             "enabled": True,
             "on_error": True,
