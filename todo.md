@@ -8,7 +8,6 @@
 - [ ] Add comprehensive error handling for server endpoints
 
 ## Documentation
-- [ ] Document the new docs command in README
 - [ ] Write usage guide for batch analyze feature
 - [ ] Create webhook integration examples for more frameworks (Django, Express, Flask)
 - [ ] Add troubleshooting section to README
