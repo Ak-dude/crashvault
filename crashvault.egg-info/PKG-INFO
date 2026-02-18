@@ -1,0 +1,501 @@
+Metadata-Version: 2.4
+Name: crashvault
+Version: 0.2.2
+Summary: Lightweight local crash/error vault with CLI
+Home-page: https://github.com/creeperkid2014/crashvault
+Author: Creeperkid2014 / AgentArk5
+License: Custom-Open License
+Project-URL: Source, https://github.com/creeperkid2014/crashvault
+Project-URL: Issues, https://github.com/creeperkid2014/crashvault/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Environment :: Console
+Classifier: Topic :: System :: Logging
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>=8
+Requires-Dist: rich
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+## Crashvault
+
+Crashvault is a lightweight, local-first crash/error vault with a simple CLI. Log errors, group them into issues, search, export/import, and keep a local history.
+
+## Install
+
+From source:
+```
+pip install -e .
+```
+
+Once installed, the `crashvault` command is available.
+
+### First-time setup
+
+After installation, run the setup command to initialize your configuration:
+```
+crashvault setup
+```
+
+This creates `~/.crashvault/config.json` with default settings for:
+- User information (name, email, team)
+- Notification preferences
+- Storage configuration
+
+## Commands
+
+```
+crashvault help
+```
+
+```
+crashvault list
+```
+
+```
+crashvault add [ERROR]
+
+```
+
+crashvault kill
+
+## Enhanced usage
+
+- Enriched event logging with levels, tags, and context:
+
+```
+crashvault add "Database timeout" --level=error --tag=db --tag=timeout --context service=orders --context region=us-east-1
+```
+
+- Search events by level, tag, and text:
+
+```
+crashvault search --level=error --tag=db --text="timeout"
+```
+
+- Show simple statistics:
+
+```
+crashvault stats
+```
+
+### Additional commands
+
+- Set status / reopen / rename:
+```
+crashvault set-status 12 resolved
+crashvault reopen 12
+crashvault set-title 12 "New clearer title"
+```
+
+- Purge a single issue and its events:
+```
+crashvault purge 12
+```
+
+- Garbage collect orphaned events:
+```
+crashvault gc
+```
+
+- Export/Import all data:
+```
+crashvault export --output backup.json
+crashvault import backup.json --mode=merge
+```
+
+- Tail events live (with optional filters):
+```
+crashvault tail --level=error --tag=db --text=timeout
+```
+
+- List with filters/sorting:
+```
+crashvault list --status=open --sort=created_at --desc
+```
+
+### Beyond errors: notes, reports, attachments
+
+- Add a quick note:
+```
+crashvault note "Shipped v0.2.0 to staging" --tag=release
+```
+
+- Create a small report:
+```
+crashvault report --title "Outage resolved" --body "Root cause: bad config" --tag=incident
+```
+
+- Attach a file:
+```
+crashvault attach ./screenshot.png --name ui/screenshot-2025-10-09.png
+```
+
+### Auto logging options
+
+- Wrap any command and auto-log on failure:
+```
+crashvault wrap npm run build
+```
+
+- Install a Python exception hook (current process only):
+```
+python -c "import crashvault.cli as c; c.autolog.main([])"
+# or from CLI spawn a Python process and autolog uncaught exceptions in that process
+crashvault autolog
+```
+
+### Diagnose
+
+- Show code context from a stacktrace event:
+```
+crashvault diagnose <EVENT_ID>
+```
+
+### Generate formatted reports
+
+- Generate reports in various formats:
+```
+# Markdown report (default)
+crashvault generate-report --format markdown --output report.md
+
+# HTML report with styling
+crashvault generate-report --format html --output report.html
+
+# JSON report for programmatic processing
+crashvault generate-report --format json --output report.json
+
+# Filter reports by status, level, or tags
+crashvault generate-report --format html --status open --level error --output errors.html
+```
+
+### Notifications
+
+- Send a desktop notification for an event:
+```
+crashvault notify <EVENT_ID>
+```
+
+## Runtime Error Listening
+
+CrashVault can receive errors from your applications in real-time via an HTTP server.
+
+### Start the server
+
+```bash
+# Run in foreground
+crashvault server start
+
+# Run in background
+crashvault server start --background
+
+# Custom port
+crashvault server start --port 9000
+
+# Check status
+crashvault server status
+
+# Stop background server
+crashvault server stop
+
+# View logs
+crashvault server logs -f
+```
+
+The server listens on `http://localhost:5678` by default.
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/events` | POST | Submit an error event |
+| `/api/v1/batch` | POST | Submit multiple events |
+| `/api/v1/stats` | GET | Get error statistics |
+| `/api/health` | GET | Health check |
+
+### Event Payload
+
+```json
+{
+  "message": "TypeError: Cannot read property 'foo' of undefined",
+  "stacktrace": "Error: ...\n    at foo.js:10:5\n    at bar.js:20:3",
+  "level": "error",
+  "tags": ["frontend", "react"],
+  "context": {
+    "user_id": "123",
+    "browser": "Chrome 120"
+  },
+  "source": "https://myapp.com/dashboard",
+  "line": 42,
+  "column": 15
+}
+```
+
+**Required fields:** `message`
+
+**Optional fields:**
+- `stacktrace` / `stack` - Full stack trace
+- `level` - One of: `debug`, `info`, `warning`, `error`, `critical` (default: `error`)
+- `tags` - Array of string tags
+- `context` - Object with additional metadata
+- `source` / `url` - Source file or URL
+- `line` / `lineno` - Line number
+- `column` / `colno` - Column number
+- `host` - Hostname (auto-detected from request IP if not provided)
+
+### Client Integration Examples
+
+**Browser (JavaScript):**
+
+```javascript
+// Catch all uncaught errors
+window.onerror = (message, source, line, column, error) => {
+  fetch('http://localhost:5678/api/v1/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: message,
+      stacktrace: error?.stack,
+      source: source,
+      line: line,
+      column: column,
+      level: 'error',
+      context: {
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      }
+    })
+  }).catch(() => {}); // Don't throw if CrashVault is down
+};
+
+// Catch unhandled promise rejections
+window.onunhandledrejection = (event) => {
+  fetch('http://localhost:5678/api/v1/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: event.reason?.message || String(event.reason),
+      stacktrace: event.reason?.stack,
+      level: 'error',
+      tags: ['unhandled-rejection']
+    })
+  }).catch(() => {});
+};
+```
+
+**Node.js:**
+
+```javascript
+process.on('uncaughtException', (error) => {
+  fetch('http://localhost:5678/api/v1/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: error.message,
+      stacktrace: error.stack,
+      level: 'critical',
+      tags: ['uncaught-exception']
+    })
+  }).finally(() => process.exit(1));
+});
+
+process.on('unhandledRejection', (reason) => {
+  fetch('http://localhost:5678/api/v1/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: reason?.message || String(reason),
+      stacktrace: reason?.stack,
+      level: 'error',
+      tags: ['unhandled-rejection']
+    })
+  });
+});
+```
+
+**Python:**
+
+```python
+import sys
+import traceback
+import requests
+
+def crashvault_excepthook(exc_type, exc_value, exc_tb):
+    try:
+        requests.post('http://localhost:5678/api/v1/events', json={
+            'message': str(exc_value),
+            'stacktrace': ''.join(traceback.format_exception(exc_type, exc_value, exc_tb)),
+            'level': 'error',
+            'tags': [exc_type.__name__]
+        }, timeout=5)
+    except Exception:
+        pass
+    sys.__excepthook__(exc_type, exc_value, exc_tb)
+
+sys.excepthook = crashvault_excepthook
+```
+
+**cURL (manual testing):**
+
+```bash
+curl -X POST http://localhost:5678/api/v1/events \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Test error", "level": "error", "tags": ["test"]}'
+```
+
+## Webhooks
+
+Send notifications to external services when errors occur.
+
+### Configure webhooks
+
+```bash
+# Add a Slack webhook
+crashvault webhook add slack --url="https://hooks.slack.com/services/T00/B00/xxx"
+
+# Add a Discord webhook
+crashvault webhook add discord --url="https://discord.com/api/webhooks/123/abc"
+
+# Add a generic HTTP webhook with signing secret
+crashvault webhook add http --url="https://myapp.com/webhooks/crashes" --secret="mysecret"
+
+# Filter by severity (only error and critical)
+crashvault webhook add slack --url="..." --events="error,critical"
+
+# Give it a friendly name
+crashvault webhook add slack --url="..." --name="prod-alerts"
+```
+
+### Manage webhooks
+
+```bash
+# List all webhooks
+crashvault webhook list
+
+# Show webhook details
+crashvault webhook show <id>
+
+# Test a webhook (sends a test notification)
+crashvault webhook test <id>
+
+# Disable/enable a webhook
+crashvault webhook disable <id>
+crashvault webhook enable <id>
+
+# Remove a webhook
+crashvault webhook remove <id>
+```
+
+### Webhook payload format
+
+**Slack** uses Block Kit formatting with:
+- Header with severity emoji
+- Level and issue number fields
+- Message text
+- Stacktrace in code block (truncated)
+- Host and tags in context
+
+**Discord** uses rich embeds with:
+- Color-coded by severity
+- Fields for level, issue, host, tags
+- Stacktrace in code block
+
+**HTTP** sends raw JSON:
+
+```json
+{
+  "type": "crashvault.event",
+  "data": {
+    "event_id": "abc123",
+    "issue_id": 1,
+    "message": "Error message",
+    "level": "error",
+    "stacktrace": "...",
+    "timestamp": "2025-02-10T12:00:00Z",
+    "tags": ["tag1"],
+    "context": {},
+    "host": "hostname"
+  }
+}
+```
+
+### HTTP webhook signature verification
+
+When you configure a secret, CrashVault signs the payload with HMAC-SHA256:
+
+```
+X-CrashVault-Signature: sha256=<hex-digest>
+```
+
+Verify in your webhook handler:
+
+```python
+import hmac
+import hashlib
+
+def verify_signature(payload_body: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.new(
+        secret.encode(),
+        payload_body,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(f"sha256={expected}", signature)
+```
+
+### Webhook configuration storage
+
+Webhooks are stored in `~/.crashvault/config.json`:
+
+```json
+{
+  "webhooks": [
+    {
+      "id": "abc123",
+      "type": "slack",
+      "url": "https://hooks.slack.com/...",
+      "name": "prod-alerts",
+      "events": ["error", "critical"],
+      "enabled": true
+    }
+  ]
+}
+```
+
+### Testing integration
+
+- Run tests for your repo (with coverage if available):
+```
+crashvault test --coverage --path tests/
+```
+
+## Configuration
+
+- Data directory: defaults to `~/.crashvault`. Override with environment variable `CRASHVAULT_HOME` or via config file:
+```
+crashvault config set root "C:/path/to/folder"
+```
+
+- View current path:
+```
+crashvault path
+```
+
+- Initialize folders (idempotent):
+```
+crashvault init
+```
+
+## Contributors
+Thanks to Creeperkid2014 / AgentArk5

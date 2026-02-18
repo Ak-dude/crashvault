@@ -1,0 +1,91 @@
+# Docker Compose for running crashvault tests across multiple Python versions
+# Usage: docker-compose -f tests/docker/docker-compose.test.yml up --build
+
+version: '3.8'
+
+services:
+  # Python 3.8 - minimum supported version
+  test-py38:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+      args:
+        PYTHON_VERSION: "3.8"
+    container_name: crashvault-test-py38
+    environment:
+      - CRASHVAULT_HOME=/tmp/crashvault-test
+    volumes:
+      - test-results-38:/app/test-results
+
+  # Python 3.9
+  test-py39:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+      args:
+        PYTHON_VERSION: "3.9"
+    container_name: crashvault-test-py39
+    environment:
+      - CRASHVAULT_HOME=/tmp/crashvault-test
+    volumes:
+      - test-results-39:/app/test-results
+
+  # Python 3.10
+  test-py310:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+      args:
+        PYTHON_VERSION: "3.10"
+    container_name: crashvault-test-py310
+    environment:
+      - CRASHVAULT_HOME=/tmp/crashvault-test
+    volumes:
+      - test-results-310:/app/test-results
+
+  # Python 3.11
+  test-py311:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+      args:
+        PYTHON_VERSION: "3.11"
+    container_name: crashvault-test-py311
+    environment:
+      - CRASHVAULT_HOME=/tmp/crashvault-test
+    volumes:
+      - test-results-311:/app/test-results
+
+  # Python 3.12
+  test-py312:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+      args:
+        PYTHON_VERSION: "3.12"
+    container_name: crashvault-test-py312
+    environment:
+      - CRASHVAULT_HOME=/tmp/crashvault-test
+    volumes:
+      - test-results-312:/app/test-results
+
+  # Python 3.13 (latest)
+  test-py313:
+    build:
+      context: ../..
+      dockerfile: tests/docker/Dockerfile.test
+      args:
+        PYTHON_VERSION: "3.13"
+    container_name: crashvault-test-py313
+    environment:
+      - CRASHVAULT_HOME=/tmp/crashvault-test
+    volumes:
+      - test-results-313:/app/test-results
+
+volumes:
+  test-results-38:
+  test-results-39:
+  test-results-310:
+  test-results-311:
+  test-results-312:
+  test-results-313:
