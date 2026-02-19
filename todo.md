@@ -53,10 +53,57 @@
 - [ ] Standardize error message formatting across commands
 - [ ] Refactor duplicate code in command files
 
+## Integrations
+- [ ] Slack/Discord bot for real-time error notifications
+- [ ] GitHub Issues auto-creation from crashvault events
+- [ ] Sentry-compatible event ingestion endpoint
+- [ ] PagerDuty/OpsGenie alert integration
+- [ ] Grafana datasource plugin for crash dashboards
+- [ ] CI/CD pipeline integration (GitHub Actions, GitLab CI)
+- [ ] Jira ticket auto-creation from high-severity crashes
+
+## Analytics & Insights
+- [ ] Crash trend visualization (CLI sparklines or web dashboard)
+- [ ] Error frequency heatmap by time of day
+- [ ] Automatic root cause grouping using stacktrace clustering
+- [ ] Regression detection — alert when a resolved issue reappears
+- [ ] Impact scoring based on frequency × severity
+- [ ] Weekly/monthly crash summary reports via email or webhook
+
+## Multi-user & Team Features
+- [ ] Team workspaces with shared crash vaults
+- [ ] Role-based access control for shared vaults
+- [ ] Crash assignment — assign issues to team members
+- [ ] Comment threads on individual crashes
+- [ ] Activity feed showing team actions on issues
+- [ ] Crash review workflows (triage → assign → fix → verify)
+
+## Storage & Performance
+- [ ] SQLite backend option for large-scale local storage
+- [ ] Event archival — auto-archive old resolved issues
+- [ ] Compressed export formats (gzip JSON, SQLite dumps)
+- [ ] Lazy loading for large event histories
+- [ ] Configurable storage backends (file, SQLite, PostgreSQL)
+- [ ] Event streaming to external stores (S3, GCS)
+
+## SDK & Language Support
+- [ ] JavaScript/Node.js SDK for automatic error capture
+- [ ] Go panic handler integration
+- [ ] Rust panic hook integration
+- [ ] Java/Kotlin exception handler
+- [ ] Ruby exception middleware
+- [ ] Generic language-agnostic SDK via HTTP client libraries
+
 ## Future Ideas
 - [ ] Support for attachments in webhook notifications
 - [ ] Implement alerting rules engine (e.g., "notify if >10 errors/min")
 - [ ] Add machine learning for error classification
 - [ ] Support for distributed tracing integration
 - [ ] Implement data retention policies
-- [] Sharing Crashes via MD or JSON
+- [ ] Sharing Crashes via MD or JSON
+- [ ] Browser extension for capturing frontend JS errors
+- [ ] Mobile crash reporting (React Native, Flutter)
+- [ ] Offline-first sync — merge crash vaults across machines
+- [ ] Encrypted vault mode for sensitive error data
+- [ ] Crash replay — reproduce errors from captured context
+- [ ] Natural language search ("show me all database errors from last week")
