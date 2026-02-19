@@ -40,7 +40,7 @@
 - [ ] Add performance benchmarks for large event volumes
 
 ## Developer Experience
-- [ ] Add shell completion scripts (bash, zsh, fish)
+- [x] Add shell completion scripts (bash, zsh, fish)
 - [ ] Create VSCode extension for inline error viewing
 - [ ] Add pre-commit hooks for code quality
 - [ ] Implement plugin system for custom commands
