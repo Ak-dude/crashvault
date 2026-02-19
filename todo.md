@@ -14,7 +14,7 @@
 - [ ] Document CHANGES_SUMMARY.md format and usage
 
 ## Features
-- [ ] Add filtering options to wrap_cmd.py (by exit code, specific tags)
+- [x] Add filtering options to wrap_cmd.py (by exit code, specific tags)
 - [ ] Implement batch operations for issue management
 - [ ] Add export/import for individual issues
 - [ ] Create interactive TUI for browsing issues
