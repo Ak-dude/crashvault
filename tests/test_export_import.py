@@ -324,6 +324,78 @@ class TestImportCommand:
         assert ids == [1, 2]
 
 
+class TestExportCSVCommand:
+    """Tests for the CSV export functionality."""
+
+    def test_export_csv_format_option(self, crashvault_home, cli_runner, sample_issues, sample_events, tmp_path):
+        """Export should support --format csv option."""
+        from crashvault.cli import cli
+
+        output_file = tmp_path / "export.csv"
+        result = cli_runner.invoke(cli, ["export", "--output", str(output_file), "--format", "csv"])
+
+        assert result.exit_code == 0
+        assert output_file.exists()
+
+        content = output_file.read_text()
+        # Should contain issues section
+        assert "# Issues" in content
+        # Should contain events section
+        assert "# Events" in content
+
+    def test_export_csv_has_issue_headers(self, crashvault_home, cli_runner, sample_issues, sample_events, tmp_path):
+        """CSV export should have proper headers for issues."""
+        from crashvault.cli import cli
+
+        output_file = tmp_path / "export.csv"
+        cli_runner.invoke(cli, ["export", "--output", str(output_file), "--format", "csv"])
+
+        content = output_file.read_text()
+        # Check for expected column headers
+        assert "id,title,status,created_at,resolved_at,event_count,tags" in content
+
+    def test_export_csv_has_event_headers(self, crashvault_home, cli_runner, sample_issues, sample_events, tmp_path):
+        """CSV export should have proper headers for events."""
+        from crashvault.cli import cli
+
+        output_file = tmp_path / "export.csv"
+        cli_runner.invoke(cli, ["export", "--output", str(output_file), "--format", "csv"])
+
+        content = output_file.read_text()
+        # Check for expected column headers
+        assert "id,issue_id,message,level,timestamp,source,tags,context" in content
+
+    def test_export_csv_requires_output_file(self, crashvault_home, cli_runner, sample_issues):
+        """CSV export should require an output file."""
+        from crashvault.cli import cli
+
+        result = cli_runner.invoke(cli, ["export", "--format", "csv"])
+
+        assert result.exit_code != 0
+        assert "requires an output file" in result.output
+
+    def test_csv_contains_issue_data(self, crashvault_home, cli_runner, sample_issues, sample_events, tmp_path):
+        """CSV export should contain issue data."""
+        from crashvault.cli import cli
+
+        output_file = tmp_path / "export.csv"
+        cli_runner.invoke(cli, ["export", "--output", str(output_file), "--format", "csv"])
+
+        content = output_file.read_text()
+        # Should contain at least one issue
+        assert content.count("\n") > 5  # Headers + at least one issue row
+
+    def test_csv_format_case_insensitive(self, crashvault_home, cli_runner, sample_issues, sample_events, tmp_path):
+        """CSV format option should be case insensitive."""
+        from crashvault.cli import cli
+
+        output_file = tmp_path / "export.csv"
+        result = cli_runner.invoke(cli, ["export", "--output", str(output_file), "--format", "CSV"])
+
+        assert result.exit_code == 0
+        assert output_file.exists()
+
+
 class TestExportImportRoundtrip:
     """Tests for export/import roundtrip scenarios."""
 

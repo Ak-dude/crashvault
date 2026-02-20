@@ -8,63 +8,76 @@ from ..rich_utils import get_console
 console = get_console()
 
 
+def issues_to_csv(issues, writer):
+    """Write issues to CSV format."""
+    fieldnames = ["id", "title", "status", "created_at", "resolved_at", "event_count", "tags"]
+    writer.writeheader()
+    for issue in issues:
+        row = {
+            "id": issue.get("id", ""),
+            "title": issue.get("title", ""),
+            "status": issue.get("status", ""),
+            "created_at": issue.get("created_at", ""),
+            "resolved_at": issue.get("resolved_at", ""),
+            "event_count": len(issue.get("events", [])),
+            "tags": ", ".join(issue.get("tags", [])),
+        }
+        writer.writerow(row)
+
+
+def events_to_csv(events, writer):
+    """Write events to CSV format."""
+    fieldnames = ["event_id", "issue_id", "message", "level", "timestamp", "source", "tags", "context"]
+    writer.writeheader()
+    for event in events:
+        row = {
+            "event_id": event.get("event_id", ""),
+            "issue_id": event.get("issue_id", ""),
+            "message": event.get("message", ""),
+            "level": event.get("level", ""),
+            "timestamp": event.get("timestamp", ""),
+            "source": event.get("source", event.get("host", "")),
+            "tags": ", ".join(event.get("tags", [])),
+            "context": json.dumps(event.get("context", {})),
+        }
+        writer.writerow(row)
+
+
+def export_as_csv(issues, events, output_path):
+    """Export issues and events to CSV format."""
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        # Write issues section
+        f.write("# Issues\n")
+        issues_writer = csv.DictWriter(f, fieldnames=["id", "title", "status", "created_at", "resolved_at", "event_count", "tags"])
+        issues_to_csv(issues, issues_writer)
+        
+        # Write blank line separator
+        f.write("\n")
+        
+        # Write events section
+        f.write("# Events\n")
+        events_writer = csv.DictWriter(f, fieldnames=["event_id", "issue_id", "message", "level", "timestamp", "source", "tags", "context"])
+        events_to_csv(events, events_writer)
+
+
 @click.command()
-@click.option("--output", type=click.Path(dir_okay=False, writable=True, resolve_path=True), help="Output file (JSON/CSV). Defaults to stdout")
-@click.option("--format", "export_format", type=click.Choice(["json", "csv"], case_sensitive=False), default="json", show_default=True, help="Export format")
-def export(output, export_format):
-    """Export all issues and events to JSON or CSV."""
+@click.option("--output", type=click.Path(dir_okay=False, writable=True, resolve_path=True), help="Output file. Defaults to stdout")
+@click.option("--format", type=click.Choice(["json", "csv"], case_sensitive=False), default="json", help="Export format (json or csv)")
+def export(output, format):
+    """Export all issues and events to JSON or CSV format."""
     issues = load_issues()
     events = load_events()
     
-    if export_format == "csv":
-        # CSV export: combine issues and events into a flat table
-        rows = []
-        # Add issue rows
-        for issue in issues:
-            rows.append({
-                "type": "issue",
-                "id": issue.get("id", ""),
-                "fingerprint": issue.get("fingerprint", ""),
-                "title": issue.get("title", ""),
-                "status": issue.get("status", ""),
-                "created_at": issue.get("created_at", ""),
-                "message": issue.get("title", ""),
-                "level": "",
-                "timestamp": issue.get("created_at", ""),
-                "tags": ",".join(issue.get("tags", [])) if isinstance(issue.get("tags"), list) else "",
-                "host": "",
-            })
-        # Add event rows
-        for event in events:
-            rows.append({
-                "type": "event",
-                "id": event.get("event_id", ""),
-                "fingerprint": "",
-                "title": "",
-                "status": "",
-                "created_at": "",
-                "message": event.get("message", ""),
-                "level": event.get("level", ""),
-                "timestamp": event.get("timestamp", ""),
-                "tags": ",".join(event.get("tags", [])) if isinstance(event.get("tags"), list) else "",
-                "host": event.get("host", ""),
-            })
+    if format == "csv":
+        if not output:
+            # Cannot output CSV to stdout with proper formatting, require output file
+            console.print("[error]CSV format requires an output file. Use --output <filename>[/error]")
+            raise click.Abort()
         
-        # Write CSV
-        fieldnames = ["type", "id", "fingerprint", "title", "status", "created_at", "message", "level", "timestamp", "tags", "host"]
-        output_io = __import__("io").StringIO()
-        writer = csv.DictWriter(output_io, fieldnames=fieldnames, extrasaction='ignore')
-        writer.writeheader()
-        writer.writerows(rows)
-        data = output_io.getvalue()
-        
-        if output:
-            Path(output).write_text(data)
-            console.print(f"[success]Exported to[/success] [highlight]{output}[/highlight]")
-        else:
-            click.echo(data)
-    else:
-        # JSON export (original behavior)
+        export_as_csv(issues, events, output)
+        console.print(f"[success]Exported to[/success] [highlight]{output}[/highlight]")
+    
+    else:  # JSON format (default)
         payload = {
             "version": 1,
             "exported_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
@@ -77,5 +90,3 @@ def export(output, export_format):
             console.print(f"[success]Exported to[/success] [highlight]{output}[/highlight]")
         else:
             click.echo(data)
-
-
