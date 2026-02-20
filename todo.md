@@ -61,7 +61,7 @@
 ## Integrations
 - [x] Slack/Discord bot for real-time error notifications
 - [x] Add Microsoft Teams webhook provider
-- [ ] GitHub Issues auto-creation from crashvault events
+- [x] GitHub Issues auto-creation from crashvault events
 - [ ] Sentry-compatible event ingestion endpoint
 - [ ] PagerDuty/OpsGenie alert integration
 - [ ] Grafana datasource plugin for crash dashboards
