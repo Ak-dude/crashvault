@@ -1,5 +1,40 @@
 # Crashvault TODO
 
+## Competitor Roadmap (from COMPETITOR_ANALYSIS.md)
+
+### Phase 1: Polish Current Features
+- [ ] Smart deduplication — Group errors by stacktrace similarity
+- [ ] Rich TUI — Interactive terminal UI for browsing crashes
+- [ ] Batch operations — Bulk resolve, export, tag
+
+### Phase 2: Differentiators (CrashVault Superpowers)
+- [x] Encrypted vaults — Password-protected local storage (unique!)
+- [ ] Offline sync — Merge crash vaults across machines (unique!)
+- [ ] Crash replay — Reproduce errors from captured context (unique!)
+- [ ] Privacy-first analytics — Trends, heatmaps — all local (unique!)
+- [ ] Natural language search — "show me db errors from yesterday" (unique!)
+
+### Phase 3: Developer Experience
+- [ ] Plugin system — Custom commands, formatters, exporters
+- [ ] VSCode extension — Inline error viewing
+- [ ] Interactive crash share — Generate shareable links/MD (unique!)
+- [ ] Template system — Custom webhook/message templates
+
+### Phase 4: Integrations (Match competitors)
+- [ ] Sentry-compatible endpoint — Ingest from Sentry SDKs locally
+- [x] GitHub Issues auto-creation
+- [x] Slack/Discord/Teams webhooks
+- [ ] Jira ticket creation
+- [ ] CI/CD integration
+
+### Phase 5: Multi-language SDKs (Match Sentry)
+- [ ] Node.js SDK
+- [ ] Go panic handler
+- [ ] Rust panic hook
+- [ ] Generic HTTP client for any language
+
+---
+
 ## High Priority
 - [ ] Implement batch analyze command (build/lib files already present)
 - [ ] Implement code review command (build/lib files already present)
