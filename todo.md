@@ -17,12 +17,13 @@
 - [x] Add filtering options to wrap_cmd.py (by exit code, specific tags)
 - [ ] Implement batch operations for issue management
 - [ ] Add export/import for individual issues
-- [ ] Add CSV export format support
+- [x] Add CSV export format support
 - [ ] Create interactive TUI for browsing issues
 - [ ] Add support for custom severity levels
 - [ ] Implement issue deduplication based on stacktrace similarity
 - [ ] Add rate limiting for webhook notifications
 - [ ] Support for custom webhook templates
+- [ ] Encrypted vaults — password-protect local storage (unique feature!)
 
 ## Server & API
 - [ ] Add authentication/API key support for server endpoints
@@ -58,8 +59,8 @@
 - [ ] Refactor duplicate code in command files
 
 ## Integrations
-- [ ] Slack/Discord bot for real-time error notifications
-- [ ] Add Microsoft Teams webhook provider
+- [x] Slack/Discord bot for real-time error notifications
+- [x] Add Microsoft Teams webhook provider
 - [ ] GitHub Issues auto-creation from crashvault events
 - [ ] Sentry-compatible event ingestion endpoint
 - [ ] PagerDuty/OpsGenie alert integration
