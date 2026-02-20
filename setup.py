@@ -32,7 +32,7 @@ setup(
     python_requires=">=3.8",
     packages=find_packages(include=["crashvault", "crashvault.*"]),
     py_modules=[],
-    install_requires=["click>=8", "rich"],
+    install_requires=["click>=8", "rich", "cryptography"],
     entry_points={"console_scripts": ["crashvault=crashvault.cli:cli"]},
     classifiers=[
         "Programming Language :: Python :: 3",

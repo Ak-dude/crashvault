@@ -33,14 +33,48 @@ from .commands.test_cmd import test_cmd
 from .commands.setup_cmd import setup_cmd
 from .commands.generate_report_cmd import generate_report
 from .commands.completion_cmd import completion
+from .commands.encrypt_cmd import encrypt_cmd
+from .commands.decrypt_cmd import decrypt_cmd
 # from .commands.webhook_cmd import webhook
 # from .commands.server_cmd import server
 
 
 @click.group()
-def cli():
+@click.pass_context
+def cli(ctx):
     ensure_dirs()
     configure_logging()
+    
+    # Check if vault is encrypted and prompt for password if needed
+    from .core import is_vault_encrypted, set_vault_password, get_vault_password
+    from cryptography.fernet import InvalidToken
+    import getpass
+    
+    # Skip password prompt for setup, encrypt, decrypt commands
+    # These will be handled separately
+    if ctx.invoked_subcommand in ('setup', 'encrypt', 'decrypt', None):
+        return
+    
+    if is_vault_encrypted() and not get_vault_password():
+        # Prompt for password
+        password = getpass.getpass("Enter vault password: ")
+        if password:
+            # Try to verify the password works by attempting to decrypt
+            try:
+                from . import encrypter
+                from .core import ISSUES_FILE
+                if ISSUES_FILE.exists():
+                    decrypted = encrypter.decrypt_file(ISSUES_FILE, password)
+                    # Verify it's valid JSON
+                    import json
+                    json.loads(decrypted)
+                set_vault_password(password)
+            except (InvalidToken, ValueError, Exception):
+                import sys
+                from .rich_utils import get_console
+                console = get_console()
+                console.print("[error]Invalid password![/error]")
+                sys.exit(1)
 
 
 # register config subgroup
@@ -77,6 +111,8 @@ cli.add_command(test_cmd, name="test")
 cli.add_command(setup_cmd)
 cli.add_command(generate_report)
 cli.add_command(completion)
+cli.add_command(encrypt_cmd, name="encrypt")
+cli.add_command(decrypt_cmd, name="decrypt")
 
 # webhook and server commands
 # cli.add_command(webhook)
